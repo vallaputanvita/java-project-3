@@ -1,0 +1,97 @@
+import java.io.*;
+import java.util.*;
+
+class User {
+    private String username;
+    private String password;
+
+    public User(String username, String password) {
+        this.username = username;
+        this.password = password;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+}
+
+class Expense {
+    private Date date;
+    private String category;
+    private double amount;
+
+    public Expense(Date date, String category, double amount) {
+        this.date = date;
+        this.category = category;
+        this.amount = amount;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public double getAmount() {
+        return amount;
+    }
+}
+
+public class ExpenseTracker {
+    private static List<User> users = new ArrayList<>();
+    private static List<Expense> expenses = new ArrayList<>();
+    private static final String USERS_FILE = "users.txt";
+    private static final String EXPENSES_FILE = "expenses.txt";
+
+    public static void main(String[] args) {
+        loadUsers();
+        loadExpenses();
+
+        // Simulated user registration
+        registerUser("user1", "password123");
+
+        // Simulated expense entry
+        addExpense(new Date(), "Food", 50.0);
+        addExpense(new Date(), "Transport", 20.0);
+
+        // Print all expenses
+        System.out.println("All Expenses:");
+        for (Expense expense : expenses) {
+            System.out.println("Date: " + expense.getDate() + ", Category: " + expense.getCategory() + ", Amount: " + expense.getAmount());
+        }
+
+        // Save data to files
+        saveUsers();
+        saveExpenses();
+    }
+
+    public static void registerUser(String username, String password) {
+        users.add(new User(username, password));
+    }
+
+    public static void addExpense(Date date, String category, double amount) {
+        expenses.add(new Expense(date, category, amount));
+    }
+
+    public static void loadUsers() {
+        try (Scanner scanner = new Scanner(new File(USERS_FILE))) {
+            while (scanner.hasNextLine()) {
+                String[] userData = scanner.nextLine().split(",");
+                String username = userData[0];
+                String password = userData[1];
+                users.add(new User(username, password));
+            }
+        } catch (FileNotFoundException e) {
+            // Handle file not found exception
+        }
+    }
+
+    public static void loadExpenses() {
+        try (Scanner scanner = new Scanner(new File(EXPENSES_FILE))) {
+            while (scanner.hasNextLine()) {
